@@ -14,7 +14,6 @@
 #include <ot/timer/cppr.hpp>
 #include <ot/timer/scc.hpp>
 #include <ot/static/logger.hpp>
-#include <ot/spef/spef.hpp>
 #include <ot/verilog/verilog.hpp>
 #include <ot/sdc/sdc.hpp>
 #include <ot/tau/tau15.hpp>
@@ -25,14 +24,14 @@ namespace ot {
 class Timer {
 
   friend class Shell;
-  
+
   constexpr static int FULL_TIMING   = 0x01;
   constexpr static int EPTS_UPDATED  = 0x02;
   constexpr static int AREA_UPDATED  = 0x04;
   constexpr static int POWER_UPDATED = 0x08;
 
   public:
-    
+
     // Builder
     Timer& set_num_threads(unsigned);
     Timer& read_celllib(std::filesystem::path, std::optional<Split> = {});
@@ -76,7 +75,7 @@ class Timer {
     std::optional<float> report_tns(std::optional<Split> = {}, std::optional<Tran> = {});
     std::optional<float> report_wns(std::optional<Split> = {}, std::optional<Tran> = {});
     std::optional<size_t> report_fep(std::optional<Split> = {}, std::optional<Tran> = {});
-    
+
     std::vector<Path> report_timing(size_t);
     std::vector<Path> report_timing(size_t, Split);
     std::vector<Path> report_timing(size_t, Tran);
@@ -98,7 +97,7 @@ class Timer {
     void dump_verilog(std::ostream&, const std::string&) const;
     void dump_spef(std::ostream&) const;
     void dump_rctree(std::ostream&) const;
-    
+
     inline auto num_primary_inputs() const;
     inline auto num_primary_outputs() const;
     inline auto num_pins() const;
@@ -113,7 +112,7 @@ class Timer {
     inline auto current_unit() const;
     inline auto voltage_unit() const;
     inline auto capacitance_unit() const;
-    
+
     inline const auto& primary_inputs() const;
     inline const auto& primary_outputs() const;
     inline const auto& pins() const;
@@ -131,7 +130,7 @@ class Timer {
     tf::Executor _executor;
 
     int _state {0};
-    
+
     bool _scc_analysis {false};
 
     std::optional<tf::Task> _lineage;
@@ -146,12 +145,12 @@ class Timer {
     TimingData<std::optional<Celllib>, MAX_SPLIT> _celllib;
 
     std::unordered_map<std::string, PrimaryInput> _pis;
-    std::unordered_map<std::string, PrimaryOutput> _pos; 
+    std::unordered_map<std::string, PrimaryOutput> _pos;
     std::unordered_map<std::string, Pin> _pins;
     std::unordered_map<std::string, Net> _nets;
     std::unordered_map<std::string, Gate> _gates;
     std::unordered_map<std::string, Clock> _clocks;
- 
+
     std::list<Test> _tests;
     std::list<Arc> _arcs;
     std::list<Pin*> _frontiers;
@@ -161,7 +160,7 @@ class Timer {
     TimingData<std::optional<float>,  MAX_SPLIT, MAX_TRAN> _wns;
     TimingData<std::optional<float>,  MAX_SPLIT, MAX_TRAN> _tns;
     TimingData<std::optional<size_t>, MAX_SPLIT, MAX_TRAN> _fep;
-    
+
     std::optional<float> _area;
     std::optional<float> _leakage_power;
 
@@ -170,7 +169,7 @@ class Timer {
 
     IndexGenerator<size_t> _pin_idx_gen {0u};
     IndexGenerator<size_t> _arc_idx_gen {0u};
-    
+
     std::vector<Pin*> _scc_cands;
     std::vector<Pin*> _idx2pin;
     std::vector<Arc*> _idx2arc;
@@ -182,7 +181,7 @@ class Timer {
     std::vector<Endpoint*> _worst_endpoints(const PathGuide&);
 
     std::vector<Path> _report_timing(std::vector<Endpoint*>&&, size_t);
-    
+
     bool _is_redundant_timing(const Timing&, Split) const;
 
     void _to_time_unit(const second_t&);
@@ -269,7 +268,7 @@ class Timer {
 
     template <typename... T, std::enable_if_t<(sizeof...(T)>1), void>* = nullptr >
     void _insert_frontier(T&&...);
-    
+
     SfxtCache _sfxt_cache(const Endpoint&) const;
     SfxtCache _sfxt_cache(const PrimaryOutput&, Split, Tran) const;
     SfxtCache _sfxt_cache(const Test&, Split, Tran) const;
@@ -295,7 +294,7 @@ class Timer {
     std::optional<float> _cppr_credit(const CpprCache&, Pin&, Split, Tran) const;
     std::optional<float> _cppr_offset(const CpprCache&, Pin&, Split, Tran) const;
     std::optional<float> _sfxt_offset(const SfxtCache&, size_t) const;
-    
+
     size_t _max_pin_name_size() const;
     size_t _max_net_name_size() const;
 
@@ -314,7 +313,7 @@ template <typename... T, std::enable_if_t<(sizeof...(T)>1), void>*>
 void Timer::_insert_frontier(T&&... pins) {
   (_insert_frontier(pins), ...);
 }
-    
+
 // Function: num_primary_inputs
 inline auto Timer::num_primary_inputs() const {
   return _pis.size();
@@ -354,7 +353,7 @@ inline auto Timer::num_tests() const {
 inline auto Timer::num_sccs() const {
   return _sccs.size();
 }
-    
+
 // Function: time_unit
 inline auto Timer::time_unit() const {
   return _time_unit;
@@ -386,7 +385,7 @@ inline auto Timer::capacitance_unit() const {
 }
 
 // Function: primary_inputs
-// expose the primary input data structure to users    
+// expose the primary input data structure to users
 inline const auto& Timer::primary_inputs() const {
   return _pis;
 }
@@ -478,7 +477,7 @@ inline auto Timer::_has_state(int s) const {
 inline auto Timer::_insert_state(int s) {
   _state |= s;
 }
-  
+
 // Procedure: _remove_state
 inline auto Timer::_remove_state(int s) {
   if(s == 0) _state = 0;

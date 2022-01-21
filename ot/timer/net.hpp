@@ -1,7 +1,6 @@
 #ifndef OT_TIMER_NET_HPP_
 #define OT_TIMER_NET_HPP_
 
-#include <ot/spef/spef.hpp>
 #include <ot/timer/pin.hpp>
 #include <ot/traits.hpp>
 
@@ -20,7 +19,7 @@ class RctNode {
   friend class Rct;
   friend class Net;
   friend class Timer;
-  
+
   public:
 
     RctNode() = default;
@@ -33,11 +32,11 @@ class RctNode {
 
   private:
 
-    std::string _name;                           
+    std::string _name;
 
-    TimingData<float, MAX_TRAN, MAX_SPLIT> _ures   ; 
+    TimingData<float, MAX_TRAN, MAX_SPLIT> _ures   ;
     TimingData<float, MAX_TRAN, MAX_SPLIT> _ncap   ;
-    TimingData<float, MAX_TRAN, MAX_SPLIT> _load   ; 
+    TimingData<float, MAX_TRAN, MAX_SPLIT> _load   ;
     TimingData<float, MAX_TRAN, MAX_SPLIT> _beta   ;
     TimingData<float, MAX_TRAN, MAX_SPLIT> _delay  ;
     TimingData<float, MAX_TRAN, MAX_SPLIT> _ldelay ;
@@ -59,19 +58,19 @@ class RctEdge {
   friend class Rct;
   friend class Net;
   friend class Timer;
-  
+
   public:
-    
+
     RctEdge(RctNode&, RctNode&, float);
 
     inline float res() const;
     inline void res(float);
-  
+
   private:
 
     RctNode& _from;
     RctNode& _to;
-    
+
     float _res {0.0f};
 
     void _scale_resistance(float);
@@ -84,7 +83,7 @@ inline float RctEdge::res() const {
 
 // Procedure: res
 inline void RctEdge::res(float v) {
-  _res = v; 
+  _res = v;
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -101,14 +100,14 @@ class Rct {
     void insert_segment(const std::string&, const std::string&, float);
     void insert_node(const std::string&, float = 0.0f);
     void insert_edge(const std::string&, const std::string&, float);
-    
+
     float total_ncap() const;
     float slew(const std::string&, Split, Tran, float) const;
     float delay(const std::string&, Split, Tran) const;
 
     inline size_t num_nodes() const;
     inline size_t num_edges() const;
-    
+
     const RctNode* node(const std::string&) const;
 
   private:
@@ -146,13 +145,13 @@ class Net {
   friend class Timer;
   friend class Arc;
   friend class Pin;
-  
+
   struct EmptyRct {
     std::array<std::array<float, MAX_TRAN>, MAX_SPLIT> load;
   };
 
   public:
-    
+
     Net() = default;
     Net(const std::string&);
 
@@ -179,7 +178,7 @@ class Net {
 
     std::optional<float> _slew(Split, Tran, float, Pin&) const;
     std::optional<float> _delay(Split, Tran, Pin&) const;
-    
+
     void _update_rc_timing();
     void _attach(spef::Net&&);
     void _make_rct();
@@ -188,7 +187,7 @@ class Net {
     void _remove_pin(Pin&);
     void _scale_capacitance(float);
     void _scale_resistance(float);
-}; 
+};
 
 // Function: name
 inline const std::string& Net::name() const {

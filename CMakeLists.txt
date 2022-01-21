@@ -159,7 +159,6 @@ set(OT_CPP
   ot/tau/tau15.cpp
   ot/utility/os.cpp
   ot/utility/tokenizer.cpp
-  ot/spef/spef.cpp
 )
 
 #message(STATUS "OT_CPP: ${OT_CPP}")
